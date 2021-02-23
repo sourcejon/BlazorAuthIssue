@@ -1,62 +1,22 @@
-﻿@inject IJSRuntime JSRuntime
+@inject IJSRuntime JSRuntime
 
 <h3>Worldpay</h3>
-<button class="btn btn-primary" @onclick="Open">Click me WP</button>
 
 <p>Token @_token</p>
 
 
-<div class="modal" tabindex="-1" role="dialog" aria-labelledby="modalTitle" aria-hidden="true" style="display:@_modalDisplay">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="modalTitle">Pay Securely</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close" @onclick="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <div id='paymentSection'></div>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal" @onclick="Close">Close</button>
-            </div>
-        </div>
-    </div>
-</div>
+<div id='paymentSection'></div>
 
 @code {
     private string _clientKey = "T_C233434343434";
     private string _code = "T_3278327323";
-    private string _modalDisplay = "none";
-
     private string _token;
 
-    private void WP()
+    protected override async Task OnAfterRenderAsync(bool firstRender)
     {
-        var dotNetRef = DotNetObjectReference.Create(this);
-        JSRuntime.InvokeVoidAsync("setupPaymentModal", _clientKey, _code, dotNetRef);
-        StateHasChanged();
-    }
-
-    [JSInvokable("SubmitPaymentForm")]
-    public async Task SubmitPaymentForm(string token)
-    {
-        await Task.Delay(100);
-        _token = token;
-        StateHasChanged();
-    }
-
-    public void Open()
-    {
-        WP();
-        _modalDisplay = "block";
-        StateHasChanged();
-    }
-
-    public void Close()
-    {
-        _modalDisplay = "none";
-        StateHasChanged();
+        if(firstRender)
+        {
+            await JSRuntime.InvokeVoidAsync("setupPaymentModal", _clientKey, _code);
+        }
     }
 }
