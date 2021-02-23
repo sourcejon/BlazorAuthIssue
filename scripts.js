@@ -1,4 +1,4 @@
-﻿function setupPaymentModal(clientKey, code, dotNetObject) {
+function setupPaymentModal(clientKey, code) {
     var foo = Worldpay.useTemplateForm({
         'clientKey': clientKey,
         'form': 'paymentForm',
@@ -7,7 +7,7 @@
         'code': code,
         'callback': function (obj) {
             if (obj && obj.token) {
-                dotNetObject.invokeMethodAsync("SubmitPaymentForm", obj.token);
+                console.log(obj.token);
             }
         }
     });
